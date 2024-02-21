@@ -2,7 +2,8 @@
 
 
 import express from 'express'
-import { CONNECT_DB, GET_DB } from './config/mongodb'
+import exitHook from 'async-exit-hook'
+import { CONNECT_DB, GET_DB, CLOSE_DB } from './config/mongodb'
 
 const START_SERVER = () => {
   const app = express()
@@ -17,6 +18,14 @@ const START_SERVER = () => {
   app.listen(port, hostname, async () => {
     console.log(await GET_DB().listCollections().toArray())
     console.log(`Hello Trung Quan Dev, I am running at ${ hostname }:${ port }/`)
+  })
+
+  // hook exitHook của async-exit-hook
+  // xử lí cleanup action trước khi nodejs exits
+  // docs : https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+  exitHook(() => {
+    CLOSE_DB()
+    console.log('Closed DB')
   })
 }
 
