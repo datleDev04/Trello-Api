@@ -1,12 +1,10 @@
-const MONGODB_URI = 'mongodb+srv://letiendat040904:2kPnrI7W7vUT7T8l@trello-api.per40n5.mongodb.net/?retryWrites=true&w=majority'
-
-const DATABASE_NAME = 'Trello_Clone_Database'
+import { env } from './environment'
 
 const { MongoClient, ServerApiVersion } = require('mongodb')
 
 let trelloDatabaseInstance = null
 
-const mongoClientInstance = new MongoClient(MONGODB_URI, {
+const mongoClientInstance = new MongoClient(env.MONGODB_URI, {
   // dành cho mongodb server 5.0 or later
   // là 1 sự lựa chọn optional
   // đảm bảo tính tương thích và duy trì ổn định khi MongoDb được cập nhật lên các phiên bản mới
@@ -22,7 +20,7 @@ export const CONNECT_DB = async () => {
   // kết nối với mongodb Atlas
   await mongoClientInstance.connect()
   // lưu giá trị của database DATABASE_NAME cho biến trelloDatabaseInstance
-  trelloDatabaseInstance = mongoClientInstance.db(DATABASE_NAME)
+  trelloDatabaseInstance = mongoClientInstance.db(env.DATABASE_NAME)
 }
 
 // Hủy kết nối với mongoDB
