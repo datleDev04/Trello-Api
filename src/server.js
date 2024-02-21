@@ -1,23 +1,20 @@
 /* eslint-disable no-console */
 
-
 import express from 'express'
+// xử lí clearup trước khi exit nodejs
 import exitHook from 'async-exit-hook'
-import { CONNECT_DB, GET_DB, CLOSE_DB } from './config/mongodb'
 
+import { env } from '~/config/environment'
+import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 const START_SERVER = () => {
   const app = express()
-
-  const hostname = 'localhost'
-  const port = 8017
 
   app.get('/', async (req, res) => {
     res.end('<h1>hêlllo</h1><hr>')
   })
 
-  app.listen(port, hostname, async () => {
-    console.log(await GET_DB().listCollections().toArray())
-    console.log(`Hello Trung Quan Dev, I am running at ${ hostname }:${ port }/`)
+  app.listen(env.APP_PORT, env.APP_HOST, async () => {
+    console.log(`Hello ${env.AUTHOR}, I am running at ${ env.APP_HOST }:${ env.APP_PORT }`)
   })
 
   // hook exitHook của async-exit-hook
