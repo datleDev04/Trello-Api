@@ -8,9 +8,16 @@ import { env } from '~/config/environment'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 
 import { APIs_V1 } from './routes/v1'
+
+
 const START_SERVER = () => {
   const app = express()
 
+  // xử lí req.body bị undefind
+  // enable req.body json data
+  app.use(express.json())
+
+  // user Routes v1
   app.use('/v1', APIs_V1)
 
   app.listen(env.APP_PORT, env.APP_HOST, async () => {
