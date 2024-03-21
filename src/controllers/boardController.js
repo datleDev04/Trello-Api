@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes'
-import ApiError from '~/utils/ApiError'
 import { boardServices } from '~/services/boardService'
 
 const createNew = async (req, res, next) => {
   try {
+    // throw new ApiError(401, 'erroe in controller')
     // điều hướng dữ liệu sang tầng service
     const createdBoard = await boardServices.createNew(req.body)
 
