@@ -3,6 +3,8 @@
 import express from 'express'
 // xử lí clearup trước khi exit nodejs
 import exitHook from 'async-exit-hook'
+import cors from 'cors'
+import { corsOptions } from '~/config/cors'
 
 import { env } from '~/config/environment'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
@@ -13,6 +15,10 @@ import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
 
 const START_SERVER = () => {
   const app = express()
+
+  // xử lí cors
+  // app.use(cors())
+  app.use(cors(corsOptions))
 
   // xử lí req.body bị undefind
   // enable req.body json data
@@ -38,7 +44,8 @@ const START_SERVER = () => {
 }
 
 // chỉ khi kết nối thành công mới start server
-(async () => {
+
+;(async () => {
   try {
     console.log('Connecting to mongodb...')
     await CONNECT_DB()
