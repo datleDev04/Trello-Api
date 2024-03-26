@@ -20,8 +20,15 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
 const createNew = async (data) => {
   try {
     const validData = await validateBeforeCreate(CARD_COLLECTION_SCHEMA, data)
+
+    const cardDataToAdd = {
+      ...validData,
+      boardId: new ObjectId(validData.boardId),
+      columnId: new ObjectId(validData.columnId)
+    }
+
     if (validData) {
-      return await GET_DB().collection(CARD_COLLECTION_NAME).insertOne(validData)
+      return await GET_DB().collection(CARD_COLLECTION_NAME).insertOne(cardDataToAdd)
     }
   } catch (error) {
     throw new Error(error)
