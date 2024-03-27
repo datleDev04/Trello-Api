@@ -74,8 +74,7 @@ const getDetails = async (id) => {
 
 const pushColumnOrderIds = async (column) => {
   try {
-    // const result =
-    await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate({
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate({
       _id: new ObjectId(column.boardId)
     }, {
       $push: {
@@ -85,7 +84,7 @@ const pushColumnOrderIds = async (column) => {
       returnNewDocument: true
     })
 
-    // return result.value
+    return result.value
   } catch (error) {
     throw new Error(error)
   }

@@ -46,8 +46,7 @@ const findById = async (id) => {
 
 const pushCardOrderIds = async (card) => {
   try {
-    // const result =
-    await GET_DB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate({
+    const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate({
       _id: new ObjectId(card.columnId)
     }, {
       $push: {
@@ -57,7 +56,7 @@ const pushCardOrderIds = async (card) => {
       returnNewDocument: true
     })
 
-    // return result.value
+    return result.value
   } catch (error) {
     throw new Error(error)
   }
