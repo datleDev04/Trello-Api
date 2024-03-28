@@ -1,6 +1,9 @@
+import { StatusCodes } from 'http-status-codes'
 import { ObjectId } from 'mongodb'
 import { boardModel } from '~/models/boardModel'
+import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
+import ApiError from '~/utils/ApiError'
 
 const createNew = async (reqBody) => {
   try {
@@ -44,8 +47,33 @@ const updateColumn = async (id, reqBody) => {
     throw error
   }
 }
+const deleteColumn = async (id) => {
+  try {
+    const targetColumn = await columnModel.findById(id)
+
+    console.log(targetColumn)
+    if (!targetColumn) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Column Not Found')
+    }
+
+
+    // xoá column
+    await columnModel.deleteOneById(id)
+    // xóa toàn bộ cards trong columns
+    await cardModel.deleteManyByColumnId(id)
+
+
+    // xóa coulumnId trong columnOrderIds
+    await boardModel.pullColumnOrderIds(targetColumn)
+
+    return { deleteResult: 'Deleted successfully' }
+  } catch (error) {
+    throw error
+  }
+}
 
 export const columnService = {
   createNew,
-  updateColumn
+  updateColumn,
+  deleteColumn
 }

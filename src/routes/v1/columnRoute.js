@@ -10,5 +10,6 @@ columnRoute.route('/')
 
 columnRoute.route('/:id')
   .put( columnValidation.updateColumn, columnController.updateColumn)
+  .delete( columnValidation.deleteColumn, columnController.deleteColumn)
 
 export default columnRoute
