@@ -22,6 +22,8 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+const INVALID_UPDATE_FILEDS = ['_id', 'createdAt']
+
 
 const createNew = async (data) => {
   try {
@@ -44,6 +46,7 @@ const findOneById = async (id) => {
     throw new Error(error)
   }
 }
+
 const getDetails = async (id) => {
   try {
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).aggregate([
@@ -74,7 +77,7 @@ const getDetails = async (id) => {
 
 const pushColumnOrderIds = async (column) => {
   try {
-    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate({
+    await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate({
       _id: new ObjectId(column.boardId)
     }, {
       $push: {
@@ -84,11 +87,32 @@ const pushColumnOrderIds = async (column) => {
       returnNewDocument: true
     })
 
-    return result.value
   } catch (error) {
     throw new Error(error)
   }
 }
+
+const update = async (id, updateData) => {
+  try {
+    // lọc các file không được cập nhật
+    Object.keys(updateData).forEach(fieldName => {
+      if (INVALID_UPDATE_FILEDS.includes(fieldName)) {
+        delete updateData[fieldName]
+      }
+    })
+    await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate({
+      _id: new ObjectId(id)
+    }, {
+      $set : updateData
+    }, {
+      returnNewDocument: true
+    })
+
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 
 export const boardModel ={
   BOARD_COLLECTION_NAME,
@@ -96,5 +120,6 @@ export const boardModel ={
   createNew,
   findOneById,
   getDetails,
-  pushColumnOrderIds
+  pushColumnOrderIds,
+  update
 }

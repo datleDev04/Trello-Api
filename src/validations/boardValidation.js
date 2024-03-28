@@ -21,7 +21,29 @@ const createNew = async (req, res, next) => {
     )
   }
 }
+const updateBoard = async (req, res, next) => {
+  // không required trong update
+  const correctCondition = Joi.object({
+    title: Joi.string().min(3).max(50).trim().strict(),
+    description: Joi.string().min(3).max(256).trim().strict(),
+    type: Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE)
+  })
+
+  try {
+    await correctCondition.validateAsync(req?.body, {
+      abortEarly: false,
+      // cho phép đẩy lên cập nhật một số trường không được định nghĩa trong correctcondition
+      allowUnknown: true
+    })
+    next()
+  } catch (error) {
+    next(
+      new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
+    )
+  }
+}
 
 export const boardValidation = {
-  createNew
+  createNew,
+  updateBoard
 }
