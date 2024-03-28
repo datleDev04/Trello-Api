@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { boardModel } from '~/models/boardModel'
 import { columnModel } from '~/models/columnModel'
 
@@ -30,6 +31,10 @@ const updateColumn = async (id, reqBody) => {
     const updateData = {
       ...reqBody,
       updatedAt: Date().now
+    }
+
+    if (updateData.columnId) {
+      updateData.columnId = new ObjectId(updateData.columnId)
     }
 
     const updatedColumn = await columnModel.update(id, updateData)
