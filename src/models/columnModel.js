@@ -18,6 +18,8 @@ const COLUMN_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+const INVALID_UPDATE_FILEDS = ['_id', 'createdAt', 'boardId']
+
 const createNew = async (data) => {
   try {
     const validData = await validateBeforeCreate(COLUMN_COLLECTION_SCHEMA, data)
@@ -61,10 +63,32 @@ const pushCardOrderIds = async (card) => {
   }
 }
 
+const update = async (id, updateData) => {
+  try {
+    // lọc các file không được cập nhật
+    Object.keys(updateData).forEach(fieldName => {
+      if (INVALID_UPDATE_FILEDS.includes(fieldName)) {
+        delete updateData[fieldName]
+      }
+    })
+    await GET_DB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate({
+      _id: new ObjectId(id)
+    }, {
+      $set : updateData
+    }, {
+      returnNewDocument: true
+    })
+
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const columnModel = {
   COLUMN_COLLECTION_NAME,
   COLUMN_COLLECTION_SCHEMA,
   createNew,
   findById,
-  pushCardOrderIds
+  pushCardOrderIds,
+  update
 }
