@@ -30,9 +30,16 @@ const START_SERVER = () => {
   // xử lí lỗi tập trung
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.APP_PORT, env.APP_HOST, async () => {
-    console.log(`Hello ${env.AUTHOR}, I am running at ${ env.APP_HOST }:${ env.APP_PORT }`)
-  })
+  if ( env.BUILD_MODE === 'production' ) {
+    app.listen(process.env.PORT, async () => {
+      console.log(`Hello MODE PRODUCTION ${env.AUTHOR}, I am running at PORT: ${ env.APP_PORT }`)
+    })
+  } else {
+    app.listen(env.APP_PORT, env.APP_HOST, async () => {
+      console.log(`Hello MODE DEV ${env.AUTHOR}, I am running at ${ env.APP_HOST }:${ env.APP_PORT }`)
+    })
+  }
+
 
   // hook exitHook của async-exit-hook
   // xử lí cleanup action trước khi nodejs exits
